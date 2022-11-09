@@ -22,6 +22,16 @@ const timeSlots = [
 currentDayDisplay.text(currentDay);
 
 
+// EXAMPLE: Saving all current settings of timeSlots to localStorage
+localStorage.setItem("allSavedEvents", JSON.stringify(timeSlots));
+
+// Get savedEvents from localStorage (if exists)
+(JSON.parse(localStorage.getItem("allSavedEvents")) !== null) 
+ ? timeSlots = JSON.parse(localStorage.getItem("allSavedEvents"))
+ : null;
+
+ 
+
 // Function to determine what color each hour block should be based on current time
 var determineRelativeTime = function (time) {
   // Get current time
@@ -40,7 +50,7 @@ var determineRelativeTime = function (time) {
 
 timeSlots.forEach(function(hourBlock, index) {
   // variable to set the color of the hourBlock based on determineRelativeTime function
-  hourBlock.color = determineRelativeTime(hourBlock.time);
+  hourBlock.relative = determineRelativeTime(hourBlock.time);
 
   // Create a new row for each timeSlot index to show that time, the color and the savedEvent (if any is saved locally)
   let hourFormat =
