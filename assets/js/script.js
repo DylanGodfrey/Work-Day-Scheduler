@@ -7,25 +7,24 @@ const currentTime = moment(currentTimeDisplay, "hA"); // Get Current Time to 'fl
 
 
 const timeSlots = [
-  {time:"9AM", color: "white", savedEvent: "No saved event!"},
-  {time:"10AM", color: "white", savedEvent: "No saved event!"},
-  {time:"11AM", color: "white", savedEvent: "No saved event!"},
-  {time:"12PM", color: "white", savedEvent: "No saved event!"},
-  {time:"1PM", color: "white", savedEvent: "No saved event!"},
-  {time:"2PM", color: "white", savedEvent: "No saved event!"},
-  {time:"3PM", color: "white", savedEvent: "No saved event!"},
-  {time:"4PM", color: "white", savedEvent: "No saved event!"},
-  {time:"5PM", color: "white", savedEvent: "No saved event!"},
+  {time:"9AM", relative: "", savedEvent: "No saved event!"},
+  {time:"10AM", relative: "", savedEvent: "No saved event!"},
+  {time:"11AM", relative: "", savedEvent: "No saved event!"},
+  {time:"12PM", relative: "", savedEvent: "No saved event!"},
+  {time:"1PM", relative: "", savedEvent: "No saved event!"},
+  {time:"2PM", relative: "", savedEvent: "No saved event!"},
+  {time:"3PM", relative: "", savedEvent: "No saved event!"},
+  {time:"4PM", relative: "", savedEvent: "No saved event!"},
+  {time:"5PM", relative: "", savedEvent: "No saved event!"},
 ];
 
-
-  // Display the current time and date in the jumbo-tron
-  currentDayDisplay.text(currentDay);
+// Display the current time and date in the jumbo-tron
+currentDayDisplay.text(currentDay);
 
 
 // Function to determine what color each hour block should be based on current time
 var determineRelativeTime = function (time) {
-  //current time
+  // Get current time
   var testTime = moment(moment().format("H A"), "H A");
   // block of time being tested and value returned
   var testBlock = moment(time, "H A");
@@ -43,19 +42,21 @@ timeSlots.forEach(function(hourBlock, index) {
   // variable to set the color of the hourBlock based on determineRelativeTime function
   hourBlock.color = determineRelativeTime(hourBlock.time);
 
-  // row setup and formatting of css in scheduler
+  // Create a new row for each timeSlot index to show that time, the color and the savedEvent (if any is saved locally)
   let hourFormat =
-  '<div class="time-block" id="' +
-  index +
-  '"><div class="row no-gutters input-group"><div class="col-sm-2 col-lg-1 input-group-prepend hour justify-content-sm-end pr-3 pt-3">' +
-  hourBlock.time +
-  '</div><textarea class="form-control ' +
-  hourBlock.color +
-  ' description">' +
-  hourBlock.savedEvent +
-      '</textarea><div class="col-sm-2 col-lg-1 input-group-append"><button class="saveBtn btn-block" type="submit"><i class="far fa-save"></i></button></div></div></div>';
+  `<div class="time-block" id="${index}">
+    <div class="row no-gutters input-group">
+      <div class="col-sm-2 col-lg-1 input-group-prepend hour justify-content-sm-end pr-3 pt-3">${hourBlock.time}</div>
+        <textarea class="form-control ${hourBlock.relative} description">${hourBlock.savedEvent}</textarea>
+        <div class="col-sm-2 col-lg-1 input-group-append">
+        <button class="saveBtn btn-block" type="submit">
+          <i class="far fa-save"></i>
+        </button>
+      </div>
+    </div>
+  </div>`;
   
-  // append the hourFormat to the rows based on variable criteria
+  // Append each new row to the container
   $(".container").append(hourFormat);
 });
 
