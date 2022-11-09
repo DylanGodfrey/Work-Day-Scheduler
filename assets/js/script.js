@@ -5,87 +5,59 @@ const currentDay = moment().format("dddd, MMMM Do, YYYY"); // Get Current Date
 const currentTimeDisplay = moment().format("hA"); // Get Current Time in AM/PM
 const currentTime = moment(currentTimeDisplay, "hA"); // Get Current Time to 'floored' (rounded down) hour
 
-init();
 
-function init() {
-  
-  const timeSlots = {
-    NineAM: {time:"9AM", color: "white", savedEvent: "none"},
-    TenAM:{time:"10AM", color: "white", savedEvent: "none"},
-    ElevenAM:{time:"11AM", color: "white", savedEvent: "none"},
-    NoonPM:{time:"12PM", color: "white", savedEvent: "none"},
-    OnePM:{time:"1PM", color: "white", savedEvent: "none"},
-    TwoPM:{time:"2PM", color: "white", savedEvent: "none"},
-    ThreePM:{time:"3PM", color: "white", savedEvent: "none"},
-    FourPM:{time:"4PM", color: "white", savedEvent: "none"},
-    FivePM:{time:"5PM", color: "white", savedEvent: "none"},
-  };
+const timeSlots = [
+  {time:"9AM", color: "white", savedEvent: "No saved event!"},
+  {time:"10AM", color: "white", savedEvent: "No saved event!"},
+  {time:"11AM", color: "white", savedEvent: "No saved event!"},
+  {time:"12PM", color: "white", savedEvent: "No saved event!"},
+  {time:"1PM", color: "white", savedEvent: "No saved event!"},
+  {time:"2PM", color: "white", savedEvent: "No saved event!"},
+  {time:"3PM", color: "white", savedEvent: "No saved event!"},
+  {time:"4PM", color: "white", savedEvent: "No saved event!"},
+  {time:"5PM", color: "white", savedEvent: "No saved event!"},
+];
+
 
   // Display the current time and date in the jumbo-tron
   currentDayDisplay.text(currentDay);
 
-  //console.log(currentTime);
 
-  
-  // Retrieves innerKey/value pairs of the timeSlots object (Nested ForEach)
-  Object.entries(timeSlots).forEach(([key, val]) => {
-    
-    let hourBlock = (`<p value=${key} style="background-color: ${val.color}">${val.time}`);
-
-    //hourBlock.val(`${val.color}`);
-
-    //console.log(`key: ${key} val: ${val}`);
-
-
-    //Object.entries(val).forEach(([innerKey, innerVal]) => {
-      //console.log(`innerKey: ${innerKey} innerVal: ${innerVal}`);
-      //let innerBlock = (`<p class='innerBlock'>${innerVal}`);
-      
-      //timeBlocksContainer.append(innerBlock);
-      //console.log(`key: ${key} val: ${val.time}`);
-      if (moment(val.time, "hA").isSame(currentTime)) {
-        console.log("same time");
-        hourBlock.addClass("present");
-        timeBlocksContainer.append(hourBlock);
-        //innerKey.color = "red";
-        //innerBlock.css("background-color", "red");
-        //color = red;
-      }
-      else if (moment(val.time, "hA").isBefore(currentTime)) {
-        console.log("before time");
-        hourBlock.addClass("past");
-        timeBlocksContainer.append(hourBlock);
-        //innerVal = "grey";
-        //hourBlock.css("background-color", "grey");
-      } 
-      else if (moment(val.time, "hA").isAfter(currentTime)) {
-        console.log("after time");
-        hourBlock.addClass("future");
-        timeBlocksContainer.append(hourBlock);
-        //innerVal = "green";
-        //hourBlock.css("background-color", "green");
-      }
-
-
-      // if (moment(innerVal, "hA").isSame(currentTime)) {
-      //   console.log("same time");
-      //   innerKey.color = "red";
-      //   //hourBlock.css("background-color", "red");
-      //   //color = red;
-      // }
-      // else if (moment(innerVal, "hA").isBefore(currentTime)) {
-      //   console.log("before time");
-      //   innerVal = "grey";
-      //   //hourBlock.css("background-color", "grey");
-      // } 
-      // else if (moment(innerVal, "hA").isAfter(currentTime)) {
-      //   console.log("after time");
-      //   innerVal = "green";
-      //   //hourBlock.css("background-color", "green");
-      // }
-      
-    });
-    
-  //});
-  
+// Function to determine what color each hour block should be based on current time
+var determineRelativeTime = function (time) {
+  //current time
+  var testTime = moment(moment().format("H A"), "H A");
+  // block of time being tested and value returned
+  var testBlock = moment(time, "H A");
+  // change color style of block depending on if statement results
+  if (testTime.isBefore(testBlock) === true) {
+      return "future";
+  } else if (testTime.isAfter(testBlock) === true) {
+      return "past";
+  } else {
+      return "present";
+  }
 };
+
+timeSlots.forEach(function(hourBlock, index) {
+  // variable to set the color of the hourBlock based on determineRelativeTime function
+  hourBlock.color = determineRelativeTime(hourBlock.time);
+
+  // row setup and formatting of css in scheduler
+  let hourFormat =
+  '<div class="time-block" id="' +
+  index +
+  '"><div class="row no-gutters input-group"><div class="col-sm-2 col-lg-1 input-group-prepend hour justify-content-sm-end pr-3 pt-3">' +
+  hourBlock.time +
+  '</div><textarea class="form-control ' +
+  hourBlock.color +
+  ' description">' +
+  hourBlock.savedEvent +
+      '</textarea><div class="col-sm-2 col-lg-1 input-group-append"><button class="saveBtn btn-block" type="submit"><i class="far fa-save"></i></button></div></div></div>';
+  
+  // append the hourFormat to the rows based on variable criteria
+  $(".container").append(hourFormat);
+});
+
+
+
